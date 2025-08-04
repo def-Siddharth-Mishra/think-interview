@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.think41.customerapi.controller.CustomerControllerTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.022 s -- in com.think41.customerapi.controller.CustomerControllerTest

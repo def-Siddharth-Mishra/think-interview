@@ -14,7 +14,9 @@ A RESTful API built with Spring Boot that provides customer data and order stati
 
 ## 📋 API Endpoints
 
-### 1. Get All Customers
+### Customer Endpoints
+
+#### 1. Get All Customers
 ```
 GET /api/customers
 ```
@@ -104,7 +106,7 @@ GET /api/customers/count
 100000
 ```
 
-### 4. Check Customer Exists
+#### 4. Check Customer Exists
 ```
 GET /api/customers/{id}/exists
 ```
@@ -112,6 +114,96 @@ GET /api/customers/{id}/exists
 **Response:**
 ```json
 true
+```
+
+### Order Endpoints
+
+#### 1. Get All Orders for a Customer
+```
+GET /api/customers/{customerId}/orders
+```
+
+**Query Parameters:**
+- `page` (optional): Page number (0-based, default: 0)
+- `size` (optional): Page size (1-100, default: 10)
+
+**Example:**
+```bash
+curl "http://localhost:8080/api/customers/1/orders?page=0&size=10"
+```
+
+**Response:**
+```json
+{
+  "content": [
+    {
+      "order_id": 1001,
+      "user_id": 1,
+      "status": "completed",
+      "gender": "M",
+      "created_at": "2023-01-15T10:30:00Z",
+      "returned_at": null,
+      "shipped_at": "2023-01-16T09:00:00Z",
+      "delivered_at": "2023-01-18T14:30:00Z",
+      "num_of_item": 2,
+      "customer_name": "John Doe",
+      "customer_email": "john@example.com"
+    }
+  ],
+  "page_number": 0,
+  "page_size": 10,
+  "total_elements": 5,
+  "total_pages": 1,
+  "is_first": true,
+  "is_last": true
+}
+```
+
+#### 2. Get Specific Order for Customer
+```
+GET /api/customers/{customerId}/orders/{orderId}
+```
+
+**Example:**
+```bash
+curl "http://localhost:8080/api/customers/1/orders/1001"
+```
+
+**Response:**
+```json
+{
+  "order_id": 1001,
+  "user_id": 1,
+  "status": "completed",
+  "gender": "M",
+  "created_at": "2023-01-15T10:30:00Z",
+  "returned_at": null,
+  "shipped_at": "2023-01-16T09:00:00Z",
+  "delivered_at": "2023-01-18T14:30:00Z",
+  "num_of_item": 2,
+  "customer_name": "John Doe",
+  "customer_email": "john@example.com"
+}
+```
+
+#### 3. Get Order by ID (Global)
+```
+GET /api/orders/{orderId}
+```
+
+**Example:**
+```bash
+curl "http://localhost:8080/api/orders/1001"
+```
+
+#### 4. Get Order Count for Customer
+```
+GET /api/customers/{customerId}/orders/count
+```
+
+**Response:**
+```json
+5
 ```
 
 ## 🛠️ Setup & Installation
@@ -197,6 +289,17 @@ The API returns structured error responses:
   "message": "Customer not found with ID: 999",
   "status": 404,
   "path": "/api/customers/999",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+**404 - Order Not Found:**
+```json
+{
+  "error": "Order Not Found",
+  "message": "Order not found with ID: 1001 for customer: 1",
+  "status": 404,
+  "path": "/api/customers/1/orders/1001",
   "timestamp": "2024-01-15T10:30:00Z"
 }
 ```
