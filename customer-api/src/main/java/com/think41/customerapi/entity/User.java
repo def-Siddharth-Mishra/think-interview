@@ -53,9 +53,6 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
     
-    // @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    // private List<Order> orders;
-    
     // Constructors
     public User() {}
     
@@ -112,6 +109,5 @@ public class User {
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
     
-    public List<Order> getOrders() { return orders; }
-    public void setOrders(List<Order> orders) { this.orders = orders; }
+
 }

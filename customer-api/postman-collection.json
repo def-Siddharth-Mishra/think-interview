@@ -1,0 +1,234 @@
+{
+	"info": {
+		"name": "Think41 Customer API",
+		"description": "REST API for customer data with pagination and search functionality",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Customers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers?page=0&size=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0",
+							"description": "Page number (0-based)"
+						},
+						{
+							"key": "size",
+							"value": "10",
+							"description": "Number of customers per page"
+						}
+					]
+				},
+				"description": "Retrieve a paginated list of all customers with their order counts"
+			}
+		},
+		{
+			"name": "Search Customers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers?search=john&page=0&size=5",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "john",
+							"description": "Search term for name or email"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						}
+					]
+				},
+				"description": "Search customers by name or email"
+			}
+		},
+		{
+			"name": "Filter by Country",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers?country=United States&page=0&size=5",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "country",
+							"value": "United States",
+							"description": "Filter customers by country"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						}
+					]
+				},
+				"description": "Filter customers by country"
+			}
+		},
+		{
+			"name": "Get Customer Count",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers/count",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						"count"
+					]
+				},
+				"description": "Get total number of customers"
+			}
+		},
+		{
+			"name": "Get Customer by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						"1"
+					]
+				},
+				"description": "Get specific customer by ID"
+			}
+		},
+		{
+			"name": "Test Error - Invalid Customer ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers/999999",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						"999999"
+					]
+				},
+				"description": "Test 404 error handling with non-existent customer ID"
+			}
+		},
+		{
+			"name": "Test Error - Invalid Parameters",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/customers?page=-1&size=0",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "-1",
+							"description": "Invalid negative page number"
+						},
+						{
+							"key": "size",
+							"value": "0",
+							"description": "Invalid page size"
+						}
+					]
+				},
+				"description": "Test 400 error handling with invalid parameters"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

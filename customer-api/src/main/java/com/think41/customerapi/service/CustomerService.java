@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,7 @@ public class CustomerService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with ID: " + id));
         
-        // Count orders for this user
+        // Get order count separately
         long orderCount = userRepository.countOrdersByUserId(id);
         
         return new CustomerResponse(
@@ -95,29 +97,33 @@ public class CustomerService {
     }
     
     /**
-     * Map database result to CustomerResponse DTO
+     * Map native query result to CustomerResponse DTO
      */
     private CustomerResponse mapToCustomerResponse(Object[] result) {
-        User user = (User) result[0];
-        Long orderCount = (Long) result[1];
+        // Native query returns raw database values
+        Integer id = (Integer) result[0];
+        String firstName = (String) result[1];
+        String lastName = (String) result[2];
+        String email = (String) result[3];
+        Integer age = (Integer) result[4];
+        String gender = result[5] != null ? result[5].toString().trim() : null;
+        String state = (String) result[6];
+        String streetAddress = (String) result[7];
+        String postalCode = (String) result[8];
+        String city = (String) result[9];
+        String country = (String) result[10];
+        java.math.BigDecimal latitude = (java.math.BigDecimal) result[11];
+        java.math.BigDecimal longitude = (java.math.BigDecimal) result[12];
+        String trafficSource = (String) result[13];
+        java.sql.Timestamp createdAtTimestamp = (java.sql.Timestamp) result[14];
+        java.time.OffsetDateTime createdAt = createdAtTimestamp != null ? 
+            createdAtTimestamp.toLocalDateTime().atOffset(java.time.ZoneOffset.UTC) : null;
+        Long orderCount = result[15] != null ? ((Number) result[15]).longValue() : 0L;
         
         return new CustomerResponse(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getAge(),
-                user.getGender(),
-                user.getState(),
-                user.getStreetAddress(),
-                user.getPostalCode(),
-                user.getCity(),
-                user.getCountry(),
-                user.getLatitude(),
-                user.getLongitude(),
-                user.getTrafficSource(),
-                user.getCreatedAt(),
-                orderCount
+                id, firstName, lastName, email, age, gender, state,
+                streetAddress, postalCode, city, country, latitude, longitude,
+                trafficSource, createdAt, orderCount
         );
     }
 }

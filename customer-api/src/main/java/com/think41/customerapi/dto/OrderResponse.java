@@ -1,51 +1,47 @@
-package com.think41.customerapi.entity;
+package com.think41.customerapi.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 
-@Entity
-@Table(name = "orders")
-public class Order {
+public class OrderResponse {
     
-    @Id
-    @Column(name = "order_id")
+    @JsonProperty("order_id")
     private Integer orderId;
     
-    @Column(name = "user_id", nullable = false)
+    @JsonProperty("user_id")
     private Integer userId;
     
-    @Column(name = "status", nullable = false, length = 50)
     private String status;
-    
-    @Column(name = "gender", length = 1)
     private String gender;
     
-    @Column(name = "created_at", nullable = false)
+    @JsonProperty("created_at")
     private OffsetDateTime createdAt;
     
-    @Column(name = "returned_at")
+    @JsonProperty("returned_at")
     private OffsetDateTime returnedAt;
     
-    @Column(name = "shipped_at")
+    @JsonProperty("shipped_at")
     private OffsetDateTime shippedAt;
     
-    @Column(name = "delivered_at")
+    @JsonProperty("delivered_at")
     private OffsetDateTime deliveredAt;
     
-    @Column(name = "num_of_item")
+    @JsonProperty("num_of_item")
     private Integer numOfItem;
     
-    // Many orders belong to one user
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
+    // Customer details (optional, for detailed view)
+    @JsonProperty("customer_name")
+    private String customerName;
+    
+    @JsonProperty("customer_email")
+    private String customerEmail;
     
     // Constructors
-    public Order() {}
+    public OrderResponse() {}
     
-    public Order(Integer orderId, Integer userId, String status, String gender, 
-                 OffsetDateTime createdAt, OffsetDateTime returnedAt, 
-                 OffsetDateTime shippedAt, OffsetDateTime deliveredAt, Integer numOfItem) {
+    public OrderResponse(Integer orderId, Integer userId, String status, String gender,
+                        OffsetDateTime createdAt, OffsetDateTime returnedAt,
+                        OffsetDateTime shippedAt, OffsetDateTime deliveredAt, Integer numOfItem) {
         this.orderId = orderId;
         this.userId = userId;
         this.status = status;
@@ -55,6 +51,15 @@ public class Order {
         this.shippedAt = shippedAt;
         this.deliveredAt = deliveredAt;
         this.numOfItem = numOfItem;
+    }
+    
+    public OrderResponse(Integer orderId, Integer userId, String status, String gender,
+                        OffsetDateTime createdAt, OffsetDateTime returnedAt,
+                        OffsetDateTime shippedAt, OffsetDateTime deliveredAt, Integer numOfItem,
+                        String customerName, String customerEmail) {
+        this(orderId, userId, status, gender, createdAt, returnedAt, shippedAt, deliveredAt, numOfItem);
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
     }
     
     // Getters and Setters
@@ -85,6 +90,9 @@ public class Order {
     public Integer getNumOfItem() { return numOfItem; }
     public void setNumOfItem(Integer numOfItem) { this.numOfItem = numOfItem; }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+    
+    public String getCustomerEmail() { return customerEmail; }
+    public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
 }

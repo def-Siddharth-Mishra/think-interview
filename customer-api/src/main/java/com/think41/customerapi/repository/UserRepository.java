@@ -21,33 +21,56 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     long countOrdersByUserId(@Param("userId") Integer userId);
     
     /**
-     * Find all users with their order counts (paginated)
+     * Find user with order count by ID using native SQL
      */
-    @Query("SELECT u, COUNT(o.orderId) as orderCount " +
-           "FROM User u LEFT JOIN u.orders o " +
-           "GROUP BY u.id, u.firstName, u.lastName, u.email, u.age, u.gender, u.state, u.streetAddress, u.postalCode, u.city, u.country, u.latitude, u.longitude, u.trafficSource, u.createdAt " +
-           "ORDER BY u.id")
+    @Query(value = "SELECT u.*, COALESCE(order_counts.order_count, 0) as order_count " +
+           "FROM users u " +
+           "LEFT JOIN (SELECT user_id, COUNT(*) as order_count FROM orders GROUP BY user_id) order_counts " +
+           "ON u.id = order_counts.user_id " +
+           "WHERE u.id = :id",
+           nativeQuery = true)
+    Object[] findUserWithOrderCountById(@Param("id") Integer id);
+    
+    /**
+     * Find all users with their order counts using native SQL
+     */
+    @Query(value = "SELECT u.*, COALESCE(order_counts.order_count, 0) as order_count " +
+           "FROM users u " +
+           "LEFT JOIN (SELECT user_id, COUNT(*) as order_count FROM orders GROUP BY user_id) order_counts " +
+           "ON u.id = order_counts.user_id " +
+           "ORDER BY u.id",
+           countQuery = "SELECT COUNT(*) FROM users",
+           nativeQuery = true)
     Page<Object[]> findAllUsersWithOrderCount(Pageable pageable);
     
     /**
-     * Search users by name or email with order count
+     * Search users by name or email with order count using native SQL
      */
-    @Query("SELECT u, COUNT(o.orderId) as orderCount " +
-           "FROM User u LEFT JOIN u.orders o " +
-           "WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%')) " +
+    @Query(value = "SELECT u.*, COALESCE(order_counts.order_count, 0) as order_count " +
+           "FROM users u " +
+           "LEFT JOIN (SELECT user_id, COUNT(*) as order_count FROM orders GROUP BY user_id) order_counts " +
+           "ON u.id = order_counts.user_id " +
+           "WHERE LOWER(u.first_name) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(u.last_name) LIKE LOWER(CONCAT('%', :search, '%')) " +
            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "GROUP BY u.id, u.firstName, u.lastName, u.email, u.age, u.gender, u.state, u.streetAddress, u.postalCode, u.city, u.country, u.latitude, u.longitude, u.trafficSource, u.createdAt " +
-           "ORDER BY u.id")
+           "ORDER BY u.id",
+           countQuery = "SELECT COUNT(*) FROM users u " +
+                       "WHERE LOWER(u.first_name) LIKE LOWER(CONCAT('%', :search, '%')) " +
+                       "OR LOWER(u.last_name) LIKE LOWER(CONCAT('%', :search, '%')) " +
+                       "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))",
+           nativeQuery = true)
     Page<Object[]> searchUsersWithOrderCount(@Param("search") String search, Pageable pageable);
     
     /**
-     * Find users by country with order count
+     * Find users by country with order count using native SQL
      */
-    @Query("SELECT u, COUNT(o.orderId) as orderCount " +
-           "FROM User u LEFT JOIN u.orders o " +
+    @Query(value = "SELECT u.*, COALESCE(order_counts.order_count, 0) as order_count " +
+           "FROM users u " +
+           "LEFT JOIN (SELECT user_id, COUNT(*) as order_count FROM orders GROUP BY user_id) order_counts " +
+           "ON u.id = order_counts.user_id " +
            "WHERE u.country = :country " +
-           "GROUP BY u.id, u.firstName, u.lastName, u.email, u.age, u.gender, u.state, u.streetAddress, u.postalCode, u.city, u.country, u.latitude, u.longitude, u.trafficSource, u.createdAt " +
-           "ORDER BY u.id")
+           "ORDER BY u.id",
+           countQuery = "SELECT COUNT(*) FROM users WHERE country = :country",
+           nativeQuery = true)
     Page<Object[]> findUsersByCountryWithOrderCount(@Param("country") String country, Pageable pageable);
 }
